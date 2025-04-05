@@ -6,9 +6,14 @@ import path from "path";
 
 function getCommands(commandsPath: string) {
     const commands: Map<string, CommandHandler> = new Map();
-    fs.readdirSync(path.join(__dirname, commandsPath)).forEach((file) => {
+    const isCompiled = __dirname.endsWith("dist");
+
+    const basePath = !isCompiled
+        ? path.join(__dirname, commandsPath)
+        : path.join(__dirname, "commands", commandsPath);
+    fs.readdirSync(basePath).forEach((file) => {
         if (file.endsWith(".ts") || file.endsWith(".js")) {
-            const command = require(`${__dirname}/${commandsPath}/${file}`);
+            const command = require(`./${isCompiled && 'commands/'}${commandsPath}/${file}`);
             commands.set(command.name ?? file.replace(".ts", "").replace(".js", ""), command);
         }
     });

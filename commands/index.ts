@@ -6,7 +6,7 @@ import path from "path";
 
 function getCommands(commandsPath: string) {
     const commands: Map<string, CommandHandler> = new Map();
-    const isCompiled = __dirname.endsWith("dist");
+    const isCompiled = __dirname.endsWith("dist/");
     console.log("getCommands")
     console.log(__dirname);
     console.log(isCompiled);

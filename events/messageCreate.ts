@@ -14,27 +14,58 @@ export async function onMessageReceived(message: OmitPartialGroupDMChannel<Messa
 }
 
 async function handleSofiEventMessage(message: Message) {
-    const referenceMessage = await message.fetchReference();
-    if (!referenceMessage || (!referenceMessage.content.trim().startsWith('sev') && !referenceMessage.content.trim().startsWith("sevent")))
-        return;
-
     try {
-        const eventName = referenceMessage.embeds[0].title?.split("[")[0].trim();
+        const referenceMessage = await message.fetchReference();
+        if (!referenceMessage || (!referenceMessage.content.trim().startsWith('sev') && !referenceMessage.content.trim().startsWith("sevent")))
+            return;
+
+        const eventName = message.embeds[0].title!.split("[")[0].trim();
+
+        const timestamp = parseInt(message.embeds[0].title!.split(":")[1].split(":")[0]);
+        const eventEndDate = new Date(timestamp * 1000);
 
         const dbEvent = await SofiEvent.findOne({ eventName: eventName });
         if (!dbEvent) {
             await SofiEvent.insertOne({
                 eventName: eventName,
-                startDate: Date.now,
-                endDate: Date.now //TODO: Get Duration from message
+                startDate: new Date(),
+                endDate: eventEndDate,
+                auction: null
             })
+        } else if (!dbEvent.endDate) {
+            await SofiEvent.findOneAndUpdate({ eventName: eventName }, { endDate: eventEndDate });
         }
 
-        const drops = referenceMessage.embeds[0].fields[0].value;
-        //TODO: Get Drops and Event Drops
+        const eventTasks = message.embeds[0].description?.split("```")[1];
+        const allDropsMessage = eventTasks?.split("Drop")[0];
+        const eventDropsMessage = eventTasks?.split("sbump\n")[1].split("Drop")[0].trim();
 
-        //TODO: Add to UserStats or Update
-    } catch (error) { console.error(error); }
+        const drops = allDropsMessage!.split(" ")[1].split("/")[0].trim();
+        const eventDrops = eventDropsMessage!.split(" ")[1].split("/")[0].trim();
+
+        const user = referenceMessage.member!.user;
+        const dbUser = await UsersStats.findOne({ discordId: user.id });
+        if (dbUser) {
+            if (dbUser.events.has(eventName)) {
+                dbUser.events.get(eventName)!.drops = parseInt(drops);
+                dbUser.events.get(eventName)!.eventDrops = parseInt(eventDrops);
+            } else {
+                dbUser.events.set(eventName, { drops: parseInt(drops), eventDrops: parseInt(eventDrops) });
+            }
+
+            await dbUser.save();
+        } else {
+            await UsersStats.insertOne({
+                discordId: user.id,
+                username: user.username,
+                events: [
+                    [eventName, { drops: drops, eventDrops: eventDrops }]
+                ],
+            });
+        }
+
+
+    } catch (error) { }
 
 }
 
@@ -92,5 +123,5 @@ async function handleSofiViewMessage(message: Message) {
 
         await AuctionCard.findOneAndUpdate({ cardCode: card.code }, { cardSeries: card.series, imageUrl: card.imageUrl });
 
-    } catch (error) { console.error(error); }
+    } catch (error) { }
 }

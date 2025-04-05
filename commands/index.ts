@@ -6,16 +6,12 @@ import path from "path";
 
 function getCommands(commandsPath: string) {
     const commands: Map<string, CommandHandler> = new Map();
-    const isCompiled = __dirname.endsWith("dist/");
-    console.log("getCommands")
-    console.log(__dirname);
-    console.log(isCompiled);
 
+    const isCompiled = __dirname.endsWith("dist");
     const basePath = !isCompiled
         ? path.join(__dirname, commandsPath)
         : path.join(__dirname, "commands", commandsPath);
 
-    console.log(basePath);
     fs.readdirSync(basePath).forEach((file) => {
         if (file.endsWith(".ts") || file.endsWith(".js")) {
             const command = require(`./${isCompiled ? 'commands/' : ''}${commandsPath}/${file}`);

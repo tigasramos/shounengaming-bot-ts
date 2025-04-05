@@ -5,14 +5,15 @@ import path from "path";
 
 function getInteractions<T>(interactionPath: string) {
     const interactions: Map<string, InteractionHandler<T>> = new Map();
-    const isCompiled = __dirname.endsWith("dist");
 
-    const basePath = isCompiled
+    const isCompiled = __dirname.endsWith("dist");
+    const basePath = !isCompiled
         ? path.join(__dirname, interactionPath)
         : path.join(__dirname, "interactions", interactionPath);
+
     fs.readdirSync(basePath).forEach((file) => {
         if (file.endsWith(".ts") || file.endsWith(".js")) {
-            const interaction = require(`./${interactionPath}/${file}`);
+            const interaction = require(`./${isCompiled ? 'interactions/' : ''}${interactionPath}/${file}`);
             interactions.set(interaction.customId, interaction);
         }
     });

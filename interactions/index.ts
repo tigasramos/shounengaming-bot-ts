@@ -6,7 +6,7 @@ import path from "path";
 function getInteractions<T>(interactionPath: string) {
     const interactions: Map<string, InteractionHandler<T>> = new Map();
     fs.readdirSync(path.join(__dirname, interactionPath)).forEach((file) => {
-        if (file.endsWith(".ts")) {
+        if (file.endsWith(".ts") || file.endsWith(".js")) {
             const interaction = require(`./${interactionPath}/${file}`);
             interactions.set(interaction.customId, interaction);
         }
@@ -14,20 +14,20 @@ function getInteractions<T>(interactionPath: string) {
     return interactions;
 }
 
-// Buttons
-export function getButtons() {
-    return getInteractions<ButtonInteraction>("button");
-}
+// // Buttons
+// export function getButtons() {
+//     return getInteractions<ButtonInteraction>("button");
+// }
 
 // Select Menus
 export function getSelectMenus() {
     return getInteractions<AnySelectMenuInteraction>("select-menu");
 }
 
-// Modals
-export function getModals() {
-    return getInteractions<ModalSubmitInteraction>("modal");
-}
+// // Modals
+// export function getModals() {
+//     return getInteractions<ModalSubmitInteraction>("modal");
+// }
 
 export interface InteractionHandler<T> {
     customId: string;

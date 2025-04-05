@@ -9,8 +9,7 @@ services:
       - DISCORD_CLIENT_ID=your-client-id
       - SOFI_MIN_EVENT_DROPS=20
       - SOFI_MAX_EVENT_DROPS=70 
-      - SOFI_BOT_ID=your-bot-id
-      - SOFI_DROPS_CHANNEL_ID=channel-id
+      - SOFI_CATEGORY_ID=your-bot-id
       - SOFI_EVENT_DROPS_LOGS_CHANNEL_ID=channel-id
       - MONGO_URI=mongodb://mongodb:27017/shounengaming-bot-db
     depends_on:

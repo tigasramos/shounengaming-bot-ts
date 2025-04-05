@@ -2,6 +2,7 @@ version: "3"
 services:
   bot:
     build: .
+    container_name: shounengaming-bot-ts
     environment:
       - DISCORD_TOKEN=your-bot-token
       - DISCORD_CLIENT_ID=your-client-id
@@ -12,7 +13,7 @@ services:
 
   mongodb:
     image: mongo:latest
-    container_name: mongodb
+    container_name: shounengaming-bot-mongodb
     ports:
       - "27017:27017"
     volumes:

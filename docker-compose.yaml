@@ -1,7 +1,8 @@
 version: "3"
 services:
   bot:
-    build: .
+    build: 
+      context: .
     container_name: shounengaming-bot-ts
     environment:
       - DISCORD_TOKEN=your-bot-token

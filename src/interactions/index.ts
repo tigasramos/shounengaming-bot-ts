@@ -1,0 +1,35 @@
+import { AnySelectMenuInteraction, ButtonInteraction, ModalSubmitInteraction } from "discord.js";
+import fs from "fs";
+import path from "path";
+
+
+function getInteractions<T>(interactionPath: string) {
+    const interactions: Map<string, InteractionHandler<T>> = new Map();
+    fs.readdirSync(path.join(__dirname, interactionPath)).forEach((file) => {
+        if (file.endsWith(".ts")) {
+            const interaction = require(`./${interactionPath}/${file}`);
+            interactions.set(interaction.customId, interaction);
+        }
+    });
+    return interactions;
+}
+
+// Buttons
+export function getButtons() {
+    return getInteractions<ButtonInteraction>("button");
+}
+
+// Select Menus
+export function getSelectMenus() {
+    return getInteractions<AnySelectMenuInteraction>("select-menu");
+}
+
+// Modals
+export function getModals() {
+    return getInteractions<ModalSubmitInteraction>("modal");
+}
+
+export interface InteractionHandler<T> {
+    customId: string;
+    execute: (interaction: T) => Promise<void>
+}

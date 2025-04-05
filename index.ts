@@ -62,4 +62,4 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
 });
 
-client.login(config.DISCORD_TOKEN);
+client.login(config.DISCORD_TOKEN).catch(console.error);;

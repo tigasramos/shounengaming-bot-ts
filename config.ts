@@ -13,6 +13,8 @@ const requiredVars = [
     "SOFI_EVENT_DROPS_LOGS_CHANNEL_ID",
 ] as const;
 
+console.log(process.env);
+
 for (const varName of requiredVars) {
     if (!process.env[varName]) throw new Error(`Missing environment variable: ${varName}`);
 }

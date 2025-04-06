@@ -32,7 +32,7 @@ export async function execute(interaction: CommandInteraction) {
     }
 
     let statsMessage = `**Stats (${lastEvent.eventName})**:`;
-    usersStats = usersStats.sort((a, b) => (a.eventDrops / a.drops) - (b.eventDrops / b.drops));
+    usersStats = usersStats.filter(s => s.drops > 0).sort((a, b) => (b.eventDrops / b.drops) - (a.eventDrops / a.drops));
     usersStats.forEach(us => statsMessage = statsMessage + `\n<@${us.id}>: **${us.drops}** drops / **${us.eventDrops}** event drops **(${(us.eventDrops / us.drops * 100).toFixed(1)}%)**`)
 
     if (usersStats.length === 0) {

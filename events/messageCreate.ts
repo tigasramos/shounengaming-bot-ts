@@ -16,7 +16,7 @@ export async function onMessageReceived(message: OmitPartialGroupDMChannel<Messa
 async function handleSofiEventMessage(message: Message) {
     try {
         const referenceMessage = await message.fetchReference();
-        if (!referenceMessage || (!referenceMessage.content.trim().startsWith('sev') && !referenceMessage.content.trim().startsWith("sevent")))
+        if (!referenceMessage || (!referenceMessage.content.trim().toLowerCase().startsWith('sev') && !referenceMessage.content.trim().toLowerCase().startsWith("sevent")))
             return;
 
         const eventName = message.embeds[0].title!.split("[")[0].trim();
@@ -111,7 +111,7 @@ async function handleSofiViewMessage(message: Message) {
 
     try {
         const referenceMessage = await message.fetchReference();
-        if (!referenceMessage.content.trim().startsWith('sv') && !referenceMessage.content.trim().startsWith('sview')) return;
+        if (!referenceMessage.content.trim().toLowerCase().startsWith('sv') && !referenceMessage.content.trim().toLowerCase().startsWith('sview')) return;
 
         const card = getCardFromEmbed(message.embeds[0]);
         const dbCard = await AuctionCard.findOne({ cardCode: card.code.toLowerCase() });

@@ -9,8 +9,6 @@ export const customId = "submitAuctionCardWithPings"
 export async function execute(interaction: StringSelectMenuInteraction) {
     let reference = await interaction.message.fetchReference();
 
-    if (interaction.member?.user.id !== reference.member?.user.id) return;
-
     try {
         const extractedCard = getCardFromMessage(reference.content);
         const grabbedBy = reference.mentions.users.first()?.id;
@@ -58,9 +56,6 @@ export async function execute(interaction: StringSelectMenuInteraction) {
             community: true,
             pingedUsers: interaction.values
         });
-
-        // Delete Select Users
-        await interaction.message.delete();
 
         // Notify feedback
         return interaction.reply({

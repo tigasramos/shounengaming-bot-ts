@@ -62,7 +62,8 @@ export async function execute(interaction: CommandInteraction) {
         const firstRow = new ActionRowBuilder().addComponents(select);
 
         return await contextInteraction.reply({
-            components: [firstRow as any]
+            components: [firstRow as any],
+            flags: MessageFlags.Ephemeral
         });
 
     }
